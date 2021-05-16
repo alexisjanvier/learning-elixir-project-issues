@@ -3,12 +3,14 @@ defmodule Issues.CLI do
 
   @moduledoc """
   Handle the command line parsing and the dispatch do
-  the various functions that end up generating a 
+  the various functions that end up generating a
   table of the last _n_ issues in a github reporitory
   """
 
   def run(argv) do
-    parse_args(argv)
+    argv
+    |>parse_args
+    |>process
   end
 
   @doc """
@@ -40,4 +42,26 @@ defmodule Issues.CLI do
   def args_to_internal_representation(_) do
     :help
   end
+
+  def process(:help) do
+    IO.puts """
+    usage: Issues <user> <project> [ count | #{@default_count}]
+    """
+    System.halt(0)
+  end
+
+  def process({ user, project, _count }) do
+    Issues.GithubIssues.fetch(user, project)
+    |> decode_response()
+  end
+
+  defp decode_response({:ok, body}) do
+    body
+  end
+
+  defp decode_response({:error, error}) do
+    IO.puts "Error fetching from Github: #{error["message"]}"
+    System.halt(2)
+  end
+
 end
