@@ -1,6 +1,8 @@
 defmodule TableFormatterTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+
+  doctest Issues.TableFormatter
+  # import ExUnit.CaptureIO
 
   alias Issues.TableFormatter, as: TF
 
