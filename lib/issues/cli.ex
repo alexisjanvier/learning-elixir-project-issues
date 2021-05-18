@@ -1,4 +1,5 @@
 defmodule Issues.CLI do
+  import Issues.TableFormatter, only: [ print_table_for_colums: 2]
   @default_count 5
 
   @moduledoc """
@@ -7,7 +8,7 @@ defmodule Issues.CLI do
   table of the last _n_ issues in a github reporitory
   """
 
-  def run(argv) do
+  def main(argv) do
     argv
     |>parse_args
     |>process
@@ -55,6 +56,7 @@ defmodule Issues.CLI do
     |> decode_response()
     |> sort_into_descending_order()
     |> last(count)
+    |> print_table_for_colums(["number", "created_at", "title"])
   end
 
   defp decode_response({:ok, body}) do
